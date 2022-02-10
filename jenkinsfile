@@ -4,9 +4,9 @@ def REGRESSION_PROJECT_NAME = PROJECT_NAME + '-regression'
 // def MAVEN_IMAGE = ' -f /unit-test-mvn-build/Dockerfile http://192.168.10.88/hub-java/labo-kit/build-util.git'
 // def DEPLOY_DEST = 'D:\\' + '8084_dweller' +'\\dweller.war'
 // def DEPLOY_REGRESSION_DEST = 'D:\\' + '8101_eureka-regression' +'\\eureka-app.war'
-def TEST_NODE = 'Master'
-def DEPLOY_NODE = 'Master'
-def REDIS_NODE = 'Master'
+def TEST_NODE = 'controller'
+def DEPLOY_NODE = 'controller'
+def REDIS_NODE = 'controller'
 // def REDIS_NAME = PROJECT_NAME + '-redis'
 
 /* ENV VARIABLE */
@@ -14,7 +14,7 @@ def DB_HOST = '123456'
 
 pipeline
 {
-   agent none
+   agent any
    // 主流程
    stages
    {
