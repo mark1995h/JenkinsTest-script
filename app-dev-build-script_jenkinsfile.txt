@@ -1,0 +1,72 @@
+def GIT_URL = 'http://192.168.10.88/hub-java/deep-sea/dweller.git'
+def PROJECT_NAME = 'dweller'
+def REGRESSION_PROJECT_NAME = PROJECT_NAME + '-regression'
+def MAVEN_IMAGE = ' -f /unit-test-mvn-build/Dockerfile http://192.168.10.88/hub-java/labo-kit/build-util.git'
+def DEPLOY_DEST = 'D:\\' + '8084_dweller' +'\\dweller.war'
+def DEPLOY_REGRESSION_DEST = 'D:\\' + '8101_eureka-regression' +'\\eureka-app.war'
+def TEST_NODE = 'AP_72'
+def DEPLOY_NODE = 'AP_72'
+def REDIS_NODE = 'AP_72'
+def REDIS_NAME = PROJECT_NAME + '-redis'
+/* FIX ARG */
+def UNIT_TEST_TAG = PROJECT_NAME + '-unit-test:latest'
+def ACCEPT_TEST_NAME = PROJECT_NAME + '-acct-test'
+def ACCEPT_TEST_TAG = PROJECT_NAME + '-acct-test:latest'
+def ACCEPT_REDIS_NAME = PROJECT_NAME + '-acct-test-redis'
+def DESTROY_ACCET_CONTAINER = [ACCEPT_TEST_NAME, ACCEPT_REDIS_NAME]
+
+/* ENV VARIABLE */
+def DB_HOST = '123456'
+
+pipeline
+{
+   agent none
+   // 主流程
+   stages
+   {
+      stage ('RUN UNIT TEST')
+      {
+         agent 
+         {
+            label TEST_NODE
+         }
+
+         steps
+         {
+            deleteDir()
+            git branch: 'dev', url: GIT_URL
+            bat 'mvn clean install -Pdev' 
+
+            script {
+               try
+                  {
+                     bat "net stop " + PROJECT_NAME  
+                  }
+               catch(Exception e)
+                  {
+                     bat "net start " + PROJECT_NAME
+                     bat "net stop " + PROJECT_NAME
+                  }
+			      }
+            bat("xcopy target\\"+ PROJECT_NAME + "-0.0.1-SNAPSHOT.war " + DEPLOY_DEST +" /O /X /E /H /K /Y")
+            script {
+               try
+                  {
+                     bat "net start " + PROJECT_NAME  
+                  }
+               catch(Exception e)
+                  {
+                     bat "net stop " + PROJECT_NAME
+                     bat "net start " + PROJECT_NAME
+                  }
+            }
+   
+  
+         }
+      }
+      
+     
+   } 
+  
+
+}
