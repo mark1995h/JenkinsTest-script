@@ -20,10 +20,10 @@ pipeline
    {
       stage ('RUN UNIT TEST')
       {
-         agent 
-         {
-            label TEST_NODE
-         }
+         // agent 
+         // {
+         //    label TEST_NODE
+         // }
 
          steps
          {
